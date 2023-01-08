@@ -1,14 +1,16 @@
 import { useSelector } from 'react-redux';
 
-import { getContacts, getFilter } from 'redux/selectors';
+import { getFilter } from 'redux/selectors';
+import { useGetContactsQuery } from 'redux/contactsAPISlice';
 
 import { ContactListItem } from './ContactListItem/ContactListItem';
 import { ContactsList } from './ContactList.styled';
 
 
-export function ContactList(){
+export function ContactList() {
+  const { data: contactsData, error, isLoading } = useGetContactsQuery();
   const filterValue = useSelector(getFilter);
-  const contactsData = useSelector(getContacts);
+  
 
   const filteredContacts = (() => {
     const normalizedFilter = filterValue.toLowerCase().trim();
@@ -23,12 +25,15 @@ export function ContactList(){
 
   return (
     <ContactsList>
-      {(filteredContacts ?? contactsData).map(contactData => (
-        <ContactListItem
-          key={contactData.id}
-          contactData={contactData}
-        />
-      ))}
+      {isLoading && <p>Contacts are loading...</p>}
+      {error && <p>Oops, something went wrong. Try again</p>}
+      {contactsData &&
+        (filteredContacts ?? contactsData).map(contactData => (
+          <ContactListItem
+            key={contactData.id}
+            contactData={contactData}
+          />
+        ))}
     </ContactsList>
   );
 }
