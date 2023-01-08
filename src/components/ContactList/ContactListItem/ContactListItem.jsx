@@ -1,18 +1,14 @@
 import { PropTypes } from 'prop-types';
-import { useDispatch } from 'react-redux';
 
 import { Box } from 'components/Box/Box.styled';
 import { theme } from 'components/utils/Theme.styled';
 
-import { removeContact } from 'redux/contactsSlice';
+import { useDeleteContactMutation } from 'redux/contactsAPISlice';
 import { ContactInfo, DeleteButton } from './ContactListItem.styled';
 
-export function ContactListItem(props) {
-  const {
-    contactData: { name, number, id },
-  } = props;
-
-  const dispatch = useDispatch();
+export function ContactListItem(
+  { contactData: { name, number, id } }) {
+  const [deleteContactById, { isLoading, isSuccess }] = useDeleteContactMutation();
 
   return (
     <Box
@@ -33,15 +29,18 @@ export function ContactListItem(props) {
       <ContactInfo>
         {name}: {number}
       </ContactInfo>
-      <DeleteButton onClick={() => dispatch(removeContact(id))} isDelete={true}>
-        Delete
+      <DeleteButton
+        disabled={isLoading || isSuccess}
+        onClick={() => deleteContactById(id)}
+        isDelete={true}>
+        {isLoading || isSuccess ? 'Deleting' : 'Delete'}
       </DeleteButton>
     </Box>
   );
 }
 
 ContactListItem.propTypes = {
-  contactData: PropTypes.shape({
+  contactsData: PropTypes.shape({
     name: PropTypes.string.isRequired,
     number: PropTypes.string.isRequired,
     id: PropTypes.string.isRequired,
