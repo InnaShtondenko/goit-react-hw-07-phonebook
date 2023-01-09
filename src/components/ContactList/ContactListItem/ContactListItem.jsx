@@ -32,7 +32,8 @@ export function ContactListItem(
       <DeleteButton
         disabled={isLoading || isSuccess}
         onClick={() => deleteContactById(id)}
-        isDelete={true}>
+        isDelete={true}
+      >
         {isLoading || isSuccess ? 'Deleting' : 'Delete'}
       </DeleteButton>
     </Box>
