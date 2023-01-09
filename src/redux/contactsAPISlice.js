@@ -29,7 +29,7 @@ export const phonebookAPI = createApi({
 
     deleteContact: builder.mutation({
       query: contactID => ({
-        url: `${contactID}`,
+        url: `/${contactID}`,
         method: 'delete',
       }),
       invalidatesTags: (result, error, id) => [{ type: 'Contacts', id }],
